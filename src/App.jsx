@@ -30,18 +30,28 @@ function App() {
   }, [])
 
   // --- ФУНКЦИЯ ПОИСКА ---
-  const searchMusic = async () => {
+const searchMusic = async () => {
     if (!query.trim()) return;
     
     setIsSearching(true);
     try {
-        // Стучимся к твоему Python-боту
-        const response = await fetch(`${API_URL}/search?q=${encodeURIComponent(query)}`);
+        // 👇 ДОБАВЛЯЕМ HEADER, ЧТОБЫ NGROK НЕ РУГАЛСЯ
+        const response = await fetch(`${API_URL}/search?q=${encodeURIComponent(query)}`, {
+            headers: {
+                "ngrok-skip-browser-warning": "true" 
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
         setSearchResults(data);
     } catch (error) {
         console.error("Ошибка поиска:", error);
-        alert("Ошибка соединения с сервером Music Genie");
+        // Покажем реальную ошибку в алерте, чтобы понять причину
+        alert(`Ошибка: ${error.message}`); 
     } finally {
         setIsSearching(false);
     }
