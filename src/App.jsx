@@ -52,9 +52,12 @@ function App() {
   }
 
   // 👇 ВОТ ЗДЕСЬ БЫЛА ОШИБКА. ИСПРАВЛЕНО.
-  const playTrack = (track) => {
+const playTrack = (track) => {
+    // 👇 ОТЛАДКА: ЭТО ПОКАЖЕТ, ЧТО МЫ ПЫТАЕМСЯ ВКЛЮЧИТЬ
+    alert(`Play clicked! ID: ${track.id}, Title: ${track.title}`);
+
     setCurrentTrack({
-        id: track.id, // <--- ДОБАВИЛИ ID! БЕЗ НЕГО ПЛЕЕР НЕ ЗНАЛ, ЧТО ИГРАТЬ
+        id: track.id, 
         title: track.title,
         artist: track.uploader || "Unknown Artist",
         cover: track.meta_pkg?.meta?.cover || "https://placehold.co/600x600/1DB954/white?text=Music",
