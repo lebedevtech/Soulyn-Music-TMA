@@ -6,7 +6,7 @@ import MiniPlayer from './components/MiniPlayer'
 import { Search as SearchIcon, Loader } from 'lucide-react'
 
 // 👇 ПРОВЕРЬ, ЧТО ТУТ СТОИТ ТВОЯ АКТУАЛЬНАЯ ССЫЛКА ИЗ NGROK
-const API_URL = "https://tawanda-coachable-charlena.ngrok-free.dev";
+const API_URL = "https://polite-colts-create.loca.lt";
 
 function App() {
   const [activeTab, setActiveTab] = useState('home')

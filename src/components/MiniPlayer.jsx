@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Play, Pause, SkipForward, Heart } from 'lucide-react';
 
 // 👇 ВСТАВЬ СЮДА СВОЙ TЕКУЩИЙ NGROK URL 👇
-const API_URL = "https://tawanda-coachable-charlena.ngrok-free.dev"; 
+const API_URL = "https://polite-colts-create.loca.lt"; 
 
 const MiniPlayer = ({ track }) => {
   const [isPlaying, setIsPlaying] = useState(false);
