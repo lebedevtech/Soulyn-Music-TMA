@@ -5,19 +5,16 @@ import BottomNav from './components/BottomNav'
 import MiniPlayer from './components/MiniPlayer'
 import { Search as SearchIcon, Loader } from 'lucide-react'
 
-// 👇 ТВОЙ АДРЕС NGROK (Обязательно проверь, чтобы он совпадал с тем, что в терминале)
+// 👇 ПРОВЕРЬ, ЧТО ТУТ СТОИТ ТВОЯ АКТУАЛЬНАЯ ССЫЛКА ИЗ NGROK
 const API_URL = "https://tawanda-coachable-charlena.ngrok-free.dev";
 
 function App() {
   const [activeTab, setActiveTab] = useState('home')
   const [userData, setUserData] = useState(null)
   
-  // Состояния для поиска
   const [query, setQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [isSearching, setIsSearching] = useState(false)
-
-  // Плеер
   const [currentTrack, setCurrentTrack] = useState(null)
 
   useEffect(() => {
@@ -29,52 +26,42 @@ function App() {
     }
   }, [])
 
-  // --- ФУНКЦИЯ ПОИСКА ---
-const searchMusic = async () => {
+  const searchMusic = async () => {
     if (!query.trim()) return;
     
     setIsSearching(true);
     try {
-        // 👇 ДОБАВЛЯЕМ HEADER, ЧТОБЫ NGROK НЕ РУГАЛСЯ
         const response = await fetch(`${API_URL}/search?q=${encodeURIComponent(query)}`, {
-            headers: {
-                "ngrok-skip-browser-warning": "true" 
-            }
+            headers: { "ngrok-skip-browser-warning": "true" }
         });
         
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
         const data = await response.json();
         setSearchResults(data);
     } catch (error) {
         console.error("Ошибка поиска:", error);
-        // Покажем реальную ошибку в алерте, чтобы понять причину
         alert(`Ошибка: ${error.message}`); 
     } finally {
         setIsSearching(false);
     }
   }
 
-  // Обработчик нажатия Enter
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-        searchMusic();
-    }
+    if (e.key === 'Enter') searchMusic();
   }
 
-  // Обработчик клика по треку
+  // 👇 ВОТ ЗДЕСЬ БЫЛА ОШИБКА. ИСПРАВЛЕНО.
   const playTrack = (track) => {
     setCurrentTrack({
+        id: track.id, // <--- ДОБАВИЛИ ID! БЕЗ НЕГО ПЛЕЕР НЕ ЗНАЛ, ЧТО ИГРАТЬ
         title: track.title,
         artist: track.uploader || "Unknown Artist",
-        cover: track.meta_pkg?.meta?.cover || "https://placehold.co/600x600/1DB954/white?text=Music", // Заглушка, если нет обложки
+        cover: track.meta_pkg?.meta?.cover || "https://placehold.co/600x600/1DB954/white?text=Music",
         liked: false
     })
   }
 
-  // --- ЭКРАНЫ ---
   const renderHome = () => (
     <div style={{ padding: '20px', paddingBottom: '150px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -104,7 +91,6 @@ const searchMusic = async () => {
     <div style={{ padding: '20px', paddingTop: '10px', paddingBottom: '150px' }}>
       <h2 style={{ fontSize: '28px', fontWeight: '800', marginBottom: '20px', marginTop: 0 }}>Search</h2>
       
-      {/* Поле ввода */}
       <div style={{ background: '#1c1c1e', padding: '12px 15px', borderRadius: '12px', display: 'flex', alignItems: 'center', marginBottom: '30px' }}>
         <SearchIcon size={20} style={{ marginRight: '10px', color: '#888' }} />
         <input 
@@ -118,17 +104,14 @@ const searchMusic = async () => {
         {isSearching && <Loader size={20} className="spin" />}
       </div>
 
-      {/* Результаты поиска */}
       {searchResults.length > 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
               {searchResults.map((track) => (
                   <div key={track.id} onClick={() => playTrack(track)} style={{ display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer' }}>
-                      {/* Обложка */}
                       <div style={{ 
                           width: '50px', height: '50px', borderRadius: '8px', background: '#333', 
                           backgroundImage: `url(${track.meta_pkg?.meta?.cover})`, backgroundSize: 'cover' 
                       }}></div>
-                      {/* Инфо */}
                       <div style={{ flex: 1 }}>
                           <div style={{ fontWeight: '600', fontSize: '15px', color: currentTrack?.title === track.title ? '#1DB954' : 'white' }}>
                               {track.title}
@@ -141,7 +124,6 @@ const searchMusic = async () => {
               ))}
           </div>
       ) : (
-          /* Жанры (показываем, если нет результатов) */
           <>
             <h3 style={{ fontSize: '17px', marginBottom: '15px', fontWeight: '700' }}>Browse Categories</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
